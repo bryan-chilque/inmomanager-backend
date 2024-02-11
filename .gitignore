@@ -1,0 +1,20 @@
+# Dependencias
+node_modules/
+
+# Archivos de compilación de TypeScript
+*.js
+*.js.map
+
+# Directorio de compilación de TypeScript
+dist/
+
+# Archivos de configuración
+.env
+.env.local
+
+# Archivos de registro
+*.log
+
+# Carpeta de datos de Docker
+postgres-db/
+
