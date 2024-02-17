@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data/postgres";
+import { CreatePropertyDto, UpdatePropertyDto } from '../../domain/dtos';
 
 export class PropertyController {
 
@@ -22,44 +23,28 @@ export class PropertyController {
         : res.status( 404 ).json( { error: `Property with id ${ id } not found` } );
     };
   
-    // public createProperty = async( req: Request, res: Response ) => {
-    //   const { id, code, title, description, address, price, districtId } = req.body;
-    //   if ( !code ) return res.status( 400 ).json( { error: 'Code property is required' } );
-      
-    //   const property = await prisma.property.create({
-    //     data: {
-    //       code: id,
-    //       title: title,
-    //       description: description,
-    //       address: address,
-    //       price: price,
-    //       districtId: districtId
-    //     }
-    //   });
-
-    //   res.json( property );
-  
-    // };
+    public createProperty = async( req: Request, res: Response ) => {
+      const [error, createPropertyDto] = CreatePropertyDto.create(req.body);
+      if ( error ) return res.status( 400 ).json( { error } );
+      const property = await prisma.property.create({
+        data: createPropertyDto!
+      });
+      res.json( property );
+    };
   
     public updateProperty = async( req: Request, res: Response ) => {
       const id = req.params.id;
+      const [error, updatePropertyDto] = UpdatePropertyDto.update({...req.body, id});
+      if ( error ) return res.status( 400 ).json( { error } );
+      
       const property = await prisma.property.findFirst({
         where: { id }
       });
       if ( !property ) return res.status( 404 ).json( { error: `Todo with id ${ id } not found` } );
   
-      const { code, title, description, address, price, districtId } = req.body;
-
       const updatedProperty = await prisma.property.update({
         where: { id },
-        data: {
-          code: code,
-          title: title,
-          description: description,
-          address: address,
-          price: price,
-          districtId: districtId
-        }
+        data: updatePropertyDto!.values
       });
 
       res.json( updatedProperty );
@@ -82,5 +67,4 @@ export class PropertyController {
         ? res.json( {property, deleted} )
         : res.status( 400 ).json( { error: `Property with id ${ id } not found` } );
     }
-
 }
