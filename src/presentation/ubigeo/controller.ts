@@ -21,21 +21,6 @@ export class UbigeoController {
         : res.status( 404 ).json( { error: `Department with id ${ id } not found` } );
     };
   
-    public createDepartment = async( req: Request, res: Response ) => {
-      const { id, name } = req.body;
-      if ( !name ) return res.status( 400 ).json( { error: 'Text property is required' } );
-      
-      const department = await prisma.department.create({
-        data: {
-          id: id,
-          name: name,
-        }
-      });
-
-      res.json( department );
-  
-    };
-  
     public getProvinces = async ( req: Request, res: Response ) => {
       const province = await prisma.province.findMany();
       return res.json( province );

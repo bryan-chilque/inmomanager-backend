@@ -9,7 +9,6 @@ export class UbigeoRoutes {
 
         router.get('/departments', ubigeoController.getDepartments );
         router.get('/department/:id', ubigeoController.getDepartmentById );
-        router.post('/department', ubigeoController.createDepartment );
 
         router.get('/provinces', ubigeoController.getProvinces );
         router.get('/province/:id', ubigeoController.getProvinceById );

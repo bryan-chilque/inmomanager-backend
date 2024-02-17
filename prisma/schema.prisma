@@ -68,7 +68,7 @@ model Property {
   address     String   @db.VarChar
   price       Decimal  @db.Decimal(10, 2)
   agent       Agent?   @relation(fields: [agentId], references: [id])
-  agentId     String   @db.Char(6)
+  agentId     String?  @db.Char(6)
   district    District @relation(fields: [districtId], references: [id])
   districtId  String   @db.Char(6)
   createdAt   DateTime @default(now())
