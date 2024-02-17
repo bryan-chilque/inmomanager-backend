@@ -4,9 +4,8 @@ CREATE TYPE "Role" AS ENUM ('ADMIN');
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "email" VARCHAR NOT NULL,
+    "password" VARCHAR NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'ADMIN',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -17,6 +16,9 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Agent" (
     "id" TEXT NOT NULL,
+    "firstName" VARCHAR NOT NULL,
+    "lastName" VARCHAR NOT NULL,
+    "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -25,32 +27,26 @@ CREATE TABLE "Agent" (
 
 -- CreateTable
 CREATE TABLE "District" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "provinceId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "id" CHAR(6) NOT NULL,
+    "name" VARCHAR NOT NULL,
+    "provinceId" CHAR(6) NOT NULL,
 
     CONSTRAINT "District_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Province" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "departmentId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "id" CHAR(6) NOT NULL,
+    "name" VARCHAR NOT NULL,
+    "departmentId" CHAR(6) NOT NULL,
 
     CONSTRAINT "Province_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Department" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "id" CHAR(6) NOT NULL,
+    "name" VARCHAR NOT NULL,
 
     CONSTRAINT "Department_pkey" PRIMARY KEY ("id")
 );
@@ -58,13 +54,13 @@ CREATE TABLE "Department" (
 -- CreateTable
 CREATE TABLE "Property" (
     "id" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "agentId" TEXT NOT NULL,
-    "districtId" TEXT NOT NULL,
+    "code" VARCHAR NOT NULL,
+    "title" VARCHAR NOT NULL,
+    "description" VARCHAR NOT NULL,
+    "address" VARCHAR NOT NULL,
+    "price" DECIMAL(10,2) NOT NULL,
+    "agentId" CHAR(6) NOT NULL,
+    "districtId" CHAR(6) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -73,6 +69,12 @@ CREATE TABLE "Property" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Agent_userId_key" ON "Agent"("userId");
+
+-- AddForeignKey
+ALTER TABLE "Agent" ADD CONSTRAINT "Agent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "District" ADD CONSTRAINT "District_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Province"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

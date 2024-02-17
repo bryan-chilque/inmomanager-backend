@@ -16,5 +16,5 @@ dist/
 *.log
 
 # Carpeta de datos de Docker
-postgres-db/
+postgres/
 
