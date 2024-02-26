@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { PropertyController } from "./controller";
+import { PropertyDataSourceImpl } from "../../infrastructure/datasources/property.datasource.impl";
+import { PropertyRepositoryImpl } from "../../infrastructure/repositories/property.repository.impl";
 
 export class PropertyRoutes {
     static get routes(): Router{
         const router = Router();
 
-        const propertyController = new PropertyController();
+        const datasource = new PropertyDataSourceImpl();
+        const propertyRepository = new PropertyRepositoryImpl(datasource);
+        const propertyController = new PropertyController(propertyRepository);
 
         router.get('/', propertyController.getProperties );
         router.get('/:id', propertyController.getPropertyById );
