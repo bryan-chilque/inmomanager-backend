@@ -1,1 +1,3 @@
-export * from '../entities/property.entity';
+export * from './property.entity';
+export * from './agent.entity';
+export * from './user.entity';

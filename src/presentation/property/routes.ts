@@ -4,7 +4,7 @@ import { PropertyDataSourceImpl } from "../../infrastructure/datasources/propert
 import { PropertyRepositoryImpl } from "../../infrastructure/repositories/property.repository.impl";
 
 export class PropertyRoutes {
-    static get routes(): Router{
+    static get routes(): Router {
         const router = Router();
 
         const datasource = new PropertyDataSourceImpl();
