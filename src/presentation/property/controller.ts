@@ -35,7 +35,7 @@ export class PropertyController {
   
     public updateProperty = ( req: Request, res: Response ) => {
       const id = req.params.id;
-      const [error, updatePropertyDto] = UpdatePropertyDto.update({...req.body, id});
+      const [error, updatePropertyDto] = UpdatePropertyDto.create({...req.body, id});
       if ( error ) return res.status( 400 ).json( { error } );
       new UpdateProperty(this.propertyRepository)
       .execute(updatePropertyDto!)

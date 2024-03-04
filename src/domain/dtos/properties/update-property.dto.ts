@@ -21,7 +21,7 @@ export class UpdatePropertyDto{
         return returnObject;
     }
 
-    static update(props: {[key: string]: any}): [string?, UpdatePropertyDto?] {
+    static create(props: {[key: string]: any}): [string?, UpdatePropertyDto?] {
         const { id, code, title, description, address, price, districtId } = props;
         if ( !id ) return ['Id property is required!', undefined];
         return [undefined, new UpdatePropertyDto(id, code, title, description, address, price, districtId)]
