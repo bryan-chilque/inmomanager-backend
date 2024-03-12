@@ -14,26 +14,28 @@ datasource db {
 
 enum Role {
   ADMIN
-  AGENT
 }
 
 model User {
   id        String   @id @default(uuid())
-  email     String   @unique @db.VarChar()
+  firstName String   @db.VarChar
+  lastName  String   @db.VarChar
+  email     String   @unique @db.VarChar
   password  String   @db.VarChar
-  role      Role     @default(AGENT)
-  agent     Agent?
+  role      Role     @default(ADMIN)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Agent {
-  id         String     @id @default(uuid())
-  firstName  String     @db.VarChar
-  lastName   String     @db.VarChar
-  properties Property[]
-  userId     String     @unique
-  user       User       @relation(fields: [userId], references: [id])
+  id              String     @id @default(uuid())
+  firstName       String     @db.VarChar
+  lastName        String     @db.VarChar
+  phone           String     @db.VarChar
+  email           String     @db.VarChar @unique
+  experienceSince Int        @db.Integer
+  //language        String     @db.VarChar
+  properties      Property[]
 }
 
 model District {
@@ -61,14 +63,34 @@ model Department {
 model Property {
   id          String   @id @default(uuid())
   code        String   @db.VarChar
-  title       String   @db.VarChar
+  title       String   @db.VarChar @unique
   description String   @db.VarChar
   address     String   @db.VarChar
   price       Decimal  @db.Decimal(10, 2)
-  agent       Agent?   @relation(fields: [agentId], references: [id])
-  agentId     String?  @db.Char(6)
   district    District @relation(fields: [districtId], references: [id])
   districtId  String   @db.Char(6)
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  agentId     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  //amenity     Amenity  @relation(fields: [amenityId], references: [id])
+  //amenityId   String   @unique @db.Char(6)
 }
+
+// model Amenity {
+//   id               String     @id @default(uuid())
+//   securityCameras  Boolean    @db.Boolean
+//   garden           Boolean    @db.Boolean
+//   jacuzzi          Boolean    @db.Boolean
+//   television       Boolean    @db.Boolean
+//   gym              Boolean    @db.Boolean
+//   // heather = calefacción
+//   heater           Boolean    @db.Boolean
+//   wifi             Boolean    @db.Boolean
+//   sharedPool       Boolean    @db.Boolean
+//   // fumished = fumigado
+//   fumished         Boolean    @db.Boolean
+//   coveredParking   Boolean    @db.Boolean
+//   kitchenAppiances Boolean    @db.Boolean
+//   property         Property? 
+// }

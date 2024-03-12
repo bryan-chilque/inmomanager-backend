@@ -2,18 +2,27 @@ import { Request, Response } from "express";
 import { CreatePropertyDto, UpdatePropertyDto } from '../../domain/dtos';
 import { PropertyRepository } from '../../domain/repositories';
 import { CreateProperty, DeleteProperty, GetProperties, GetProperty, UpdateProperty } from '../../domain/use-cases';
+import { CustomError } from "../../domain/errors";
 
 export class PropertyController {
 
     constructor(
-      private readonly propertyRepository: PropertyRepository
+      public readonly propertyRepository: PropertyRepository
     ) { }
-  
+
+    private handleError = (error: unknown, res: Response ) => {
+      if ( error instanceof CustomError ) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+      console.log(`${ error }`);
+      return res.status(500).json({ error: 'Internal server error' })
+    } 
+
     public getProperties = ( req: Request, res: Response ) => {
         new GetProperties(this.propertyRepository)
         .execute()
         .then( properties => res.json( properties ))
-        .catch( error => res.status(404).json({ error }));
+        .catch( error => this.handleError(error, res));
     };
   
     public getPropertyById = ( req: Request, res: Response ) => {
@@ -21,7 +30,7 @@ export class PropertyController {
       new GetProperty(this.propertyRepository)
       .execute(id)
       .then( property => res.json( property ))
-      .catch( error => res.status(404).json({ error }));
+      .catch( error => this.handleError(error, res));
     };
   
     public createProperty = ( req: Request, res: Response ) => {
@@ -30,7 +39,7 @@ export class PropertyController {
       new CreateProperty(this.propertyRepository)
       .execute(createPropertyDto!)
       .then( property => res.json( property ))
-      .catch( error => res.status(404).json({ error }));
+      .catch( error => this.handleError(error, res));
     }
   
     public updateProperty = ( req: Request, res: Response ) => {
@@ -40,7 +49,7 @@ export class PropertyController {
       new UpdateProperty(this.propertyRepository)
       .execute(updatePropertyDto!)
       .then( updatedProperty => res.json( updatedProperty ))
-      .catch( error => res.status(404).json({ error }));
+      .catch( error => this.handleError(error, res));
     }
   
     public deleteProperty = (req:Request, res: Response) => {
@@ -48,6 +57,6 @@ export class PropertyController {
       new DeleteProperty(this.propertyRepository)
       .execute(id)
       .then( deletedRepository => res.json( deletedRepository ))
-      .catch( error => res.status(404).json({ error }));
+      .catch( error => this.handleError(error, res));
     }
 }

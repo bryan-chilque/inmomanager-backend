@@ -1,28 +1,28 @@
-import e, { Request, Response } from "express";
-import { RegisterAgent, LoginUser } from '../../domain/use-cases';
+import { Request, Response } from "express";
+import { RegisterUser, LoginUser } from '../../domain/use-cases';
 import { AuthRepository } from '../../domain/repositories';
-import { LoginUserDto, RegisterAgentDto } from "../../domain/dtos";
+import { LoginUserDto, RegisterUserDto } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors";
 
 export class AuthController {
     constructor(
-        private readonly authRepository: AuthRepository
-    ) { }
+        public readonly authRepository: AuthRepository
+    ) {}
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError){
-            res.status(error.statusCode).json({ error: error.message });
+            return res.status(error.statusCode).json({ error: error.message });
         }
-        console.log(error)
+        console.log(`${ error }`);
         return res.status(500).json({ error: 'Internal server error' });
     }
 
-    public registerAgent = (req: Request, res: Response) => {
-        const [error, registerAgentDto] = RegisterAgentDto.create(req.body);
+    public registerUser = (req: Request, res: Response) => {
+        const [error, registerUserDto] = RegisterUserDto.create(req.body);
         if (error) return res.status(400).json({ error });
-        new RegisterAgent(this.authRepository)
-            .execute(registerAgentDto!)
-            .then(agent => res.json(agent))
+        new RegisterUser(this.authRepository)
+            .execute(registerUserDto!)
+            .then(user => res.json(user))
             .catch(error => this.handleError(error, res));
     }
 

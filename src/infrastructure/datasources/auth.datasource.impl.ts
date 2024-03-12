@@ -1,51 +1,46 @@
 import { prisma } from '../../data/postgres/index';
 
-import { LoginUserDto, RegisterAgentDto } from '../../domain/dtos';
+import { LoginUserDto, RegisterUserDto } from '../../domain/dtos';
 import { AuthDataSource } from '../../domain/datasources';
 import { CustomError } from "../../domain/errors";
 import { JwtAdapter, bcryptAdapter } from '../../config';
-import { UserEntity } from '../../domain';
-import jwt from 'jsonwebtoken';
+import { UserEntity } from '../../domain/entities';
 
-export class AuthDataSourceImpl implements AuthDataSource{
+export class AuthDataSourceImpl implements AuthDataSource {
 
-    async registerAgent( registerUserDto: RegisterAgentDto ): Promise<object> {
-       const existUser = await prisma.user.findFirst({
+    constructor() { }
+
+    async registerAdmin(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+        const existUser = await prisma.user.findFirst({
             where: { email: registerUserDto.email }
         });
-        if ( existUser ) throw CustomError.badRequest('User with email already exists');
+        if (existUser) throw CustomError.badRequest('User with email already exists');
         try {
-            registerUserDto.password = bcryptAdapter.hash(registerUserDto.password);
-            await prisma.agent.create({
+            const user = await prisma.user.create({
                 data: {
-                    firstName: registerUserDto.firstName!,
-                    lastName: registerUserDto.lastName!,
-                    user: {
-                        create: {
-                            email: registerUserDto.email!,
-                            password: registerUserDto.password!,
-                        }
-                    }
+                    ...registerUserDto,
+                    password: bcryptAdapter.hash(registerUserDto.password),
                 }
             });
-            return {message: "Usuario registrado correctamente"};
+            user.password = 'password hidden for security reasons';
+            return UserEntity.fromObject(user);
         } catch (error) {
             throw CustomError.internalServer(`${error}`);
         }
-      }
+    }
 
-    async loginUser( loginUserDto: LoginUserDto ): Promise<UserEntity> {
+    async loginUser(loginUserDto: LoginUserDto): Promise<UserEntity> {
         const user = await prisma.user.findFirst({
             where: { email: loginUserDto.email }
         });
-        if ( !user ) throw CustomError.badRequest('Email not exists');
-        if ( !bcryptAdapter.compare(loginUserDto.password, user.password) ) {
+        if (!user) throw CustomError.badRequest('Email not exists');
+        if (!bcryptAdapter.compare(loginUserDto.password, user.password)) {
             throw CustomError.badRequest('Password not match');
         }
         user.password = 'password hidden for security reasons';
-        const userEntity = UserEntity.fromObject( user );
+        const userEntity = UserEntity.fromObject(user);
         userEntity.token = await JwtAdapter.generateToken({ id: user.id, email: user.email });
-        if ( !userEntity.token ) throw CustomError.internalServer('Error generating token');
+        if (!userEntity.token) throw CustomError.internalServer('Error generating token');
         return userEntity;
     }
 }

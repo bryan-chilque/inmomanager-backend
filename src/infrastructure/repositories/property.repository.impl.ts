@@ -1,4 +1,7 @@
-import { CreatePropertyDto, UpdatePropertyDto, PropertyDataSource, PropertyEntity, PropertyRepository } from '../../domain';
+import { CreatePropertyDto, UpdatePropertyDto } from '../../domain/dtos';
+import { PropertyEntity } from '../../domain/entities';
+import { PropertyDataSource } from '../../domain/datasources';
+import { PropertyRepository } from '../../domain/repositories';
 
 export class PropertyRepositoryImpl implements PropertyRepository {
 

@@ -1,5 +1,6 @@
 import { PropertyEntity } from "../entities/property.entity";
 import { CreatePropertyDto, UpdatePropertyDto } from '../dtos';
+import { UserEntity } from '../entities/user.entity';
 
 export abstract class PropertyRepository {
     abstract create( createPropertyDto: CreatePropertyDto): Promise<PropertyEntity>;
