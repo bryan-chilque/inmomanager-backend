@@ -12,7 +12,12 @@ export class JwtAdapter {
             });
         });
     }
-    static verifyToken(token: string) {
-        throw new Error('Method not implemented.');
+    static validateToken<T>(token: string): Promise<T | null> {
+        return new Promise((resolve) => {
+            jwt.verify(token, JWT_SECRET, (err, decoded) => {
+                if (err) resolve(null);
+                resolve(decoded as T);
+            });
+        });
     }
 }

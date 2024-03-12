@@ -1,0 +1,9 @@
+{
+    "model": "inmomanager.user",
+    "fields": {
+    "firstName": "Soporte",
+    "lastName": "Técnico",
+    "email": "soporte@gmail.com",
+    "password": "123456"
+    }
+}

@@ -1,23 +1,25 @@
-export class CreatePropertyDto{
+export class CreatePropertyDto {
 
-    private constructor (
+    private constructor(
         public readonly code: string,
         public readonly title: string,
         public readonly description: string,
         public readonly address: string,
         public readonly price: number,
-        public readonly districtId: string
-    ){}
+        public readonly districtId: string,
+        public readonly agentId: string,
+    ) { }
 
-    static create(props: {[key: string]: any}): [string?, CreatePropertyDto?] {
-        const { code, title, description, address, price, districtId } = props;
-        if ( !code ) return ['Code property is required'];
-        if ( !title ) return ['Title property is required'];
-        if ( !description ) return ['Description property is required'];
-        if ( !address ) return ['Address property is required'];
-        if ( !price ) return ['Price property is required'];
-        if ( isNaN(price) ) return ['Price property must be a number'];
-        if ( !districtId ) return ['DistrictId is required'];
-        return [undefined, new CreatePropertyDto(code, title, description, address, price, districtId)]
+    static create(props: { [key: string]: any }): [string?, CreatePropertyDto?] {
+        const { code, title, description, address, price, districtId, agentId } = props;
+        if (!code) return ['code property is required'];
+        if (!title) return ['title property is required'];
+        if (!description) return ['description property is required'];
+        if (!address) return ['address property is required'];
+        if (!price) return ['price property is required'];
+        if (isNaN(price)) return ['price property must be a number'];
+        if (!districtId) return ['districtId is required'];
+        if (!agentId) return ['agentId is required'];
+        return [undefined, new CreatePropertyDto(code, title, description, address, price, districtId, agentId)]
     }
 }

@@ -4,5 +4,9 @@ export * from './property/get-properties';
 export * from './property/get-property';
 export * from './property/update-property';
 
-export * from './auth/register-agent';
+export * from './auth/register-user';
 export * from './auth/login-user';
+
+export * from './agent/create-agent';
+export * from './agent/get-agents';
+export * from './agent/get-agent';

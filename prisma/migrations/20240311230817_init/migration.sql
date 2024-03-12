@@ -1,12 +1,14 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'AGENT');
+CREATE TYPE "Role" AS ENUM ('ADMIN');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
+    "firstName" VARCHAR NOT NULL,
+    "lastName" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "password" VARCHAR NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'AGENT',
+    "role" "Role" NOT NULL DEFAULT 'ADMIN',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -18,7 +20,8 @@ CREATE TABLE "Agent" (
     "id" TEXT NOT NULL,
     "firstName" VARCHAR NOT NULL,
     "lastName" VARCHAR NOT NULL,
-    "userId" TEXT NOT NULL,
+    "email" VARCHAR NOT NULL,
+    "experienceSince" INTEGER NOT NULL,
 
     CONSTRAINT "Agent_pkey" PRIMARY KEY ("id")
 );
@@ -57,7 +60,7 @@ CREATE TABLE "Property" (
     "description" VARCHAR NOT NULL,
     "address" VARCHAR NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
-    "agentId" CHAR(6),
+    "agentId" TEXT NOT NULL,
     "districtId" CHAR(6) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -69,10 +72,7 @@ CREATE TABLE "Property" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Agent_userId_key" ON "Agent"("userId");
-
--- AddForeignKey
-ALTER TABLE "Agent" ADD CONSTRAINT "Agent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+CREATE UNIQUE INDEX "Agent_email_key" ON "Agent"("email");
 
 -- AddForeignKey
 ALTER TABLE "District" ADD CONSTRAINT "District_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Province"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -81,7 +81,7 @@ ALTER TABLE "District" ADD CONSTRAINT "District_provinceId_fkey" FOREIGN KEY ("p
 ALTER TABLE "Province" ADD CONSTRAINT "Province_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Property" ADD CONSTRAINT "Property_agentId_fkey" FOREIGN KEY ("agentId") REFERENCES "Agent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Property" ADD CONSTRAINT "Property_agentId_fkey" FOREIGN KEY ("agentId") REFERENCES "Agent"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Property" ADD CONSTRAINT "Property_districtId_fkey" FOREIGN KEY ("districtId") REFERENCES "District"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

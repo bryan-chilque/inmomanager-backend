@@ -1,4 +1,4 @@
-import { LoginUserDto, RegisterAgentDto } from "../../domain/dtos";
+import { LoginUserDto, RegisterUserDto } from "../../domain/dtos";
 import { UserEntity } from "../../domain/entities";
 import { AuthDataSource } from "../../domain/datasources";
 import { AuthRepository } from "../../domain/repositories";
@@ -8,8 +8,8 @@ export class AuthRepositoryImpl implements AuthRepository {
         private readonly datasource: AuthDataSource,
     ) {}
 
-    registerAgent(registerUserDto: RegisterAgentDto): Promise<object> {
-        return this.datasource.registerAgent(registerUserDto);
+    registerAdmin(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+        return this.datasource.registerAdmin(registerUserDto);
     }
 
     loginUser(loginUserDto: LoginUserDto): Promise<UserEntity> {

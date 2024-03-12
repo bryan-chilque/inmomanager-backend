@@ -1,2 +1,2 @@
-export * from './register-agent.dto';
+export * from './register-user.dto';
 export * from './login-user.dto';

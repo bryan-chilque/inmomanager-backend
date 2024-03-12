@@ -1,5 +1,5 @@
 import { CreatePropertyDto } from '../../dtos/properties/create-property.dto';
-import { PropertyEntity } from '../../entities';
+import { PropertyEntity, UserEntity } from '../../entities';
 import { PropertyRepository } from '../../repositories';
 
 export interface CreatePropertyUseCase {

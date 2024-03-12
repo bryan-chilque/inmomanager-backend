@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { AuthController } from "./controller";
-import { AuthDataSourceImpl } from "../../infrastructure/datasources/auth.datasource.impl";
-import { AuthRepositoryImpl } from "../../infrastructure/repositories/auth.repository.impl";
+import { AuthDataSourceImpl } from "../../infrastructure/datasources";
+import { AuthRepositoryImpl } from "../../infrastructure/repositories";
+import { AuthMiddleware } from "../middlewares";
 
 export class AuthRoutes {
     static get routes(): Router {
@@ -11,7 +12,7 @@ export class AuthRoutes {
         const authController = new AuthController(authRepository);
 
         router.post('/login',  authController.loginUser);
-        router.post('/register', authController.registerAgent);
+        router.post('/register-user', [ AuthMiddleware.validateJWT ], authController.registerUser);
 
         return router;
     }
