@@ -1,11 +1,10 @@
 import { bcryptAdapter } from "../../config";
+import { prisma } from '../postgres/index';
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const fs = require('fs');
 
 async function main() {
-  const ubigeo_data = JSON.parse(fs.readFileSync('src/presentation/ubigeo/fixtures.json', 'utf8'));
+  const ubigeo_data = JSON.parse(fs.readFileSync('src/data/ubigeo.data.json', 'utf8'));
   for (const item of ubigeo_data) {
     switch (item.model) {
       case 'inmomanager.department':
@@ -19,7 +18,7 @@ async function main() {
         break;
     }
   }
-  const user_data = JSON.parse(fs.readFileSync('src/presentation/auth/fixtures.json', 'utf8'));
+  const user_data = JSON.parse(fs.readFileSync('src/data/user.data.json', 'utf8'));
   await prisma.user.create({
     data: {
       ...user_data.fields,
