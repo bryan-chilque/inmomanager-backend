@@ -20,8 +20,12 @@ CREATE TABLE "Agent" (
     "id" TEXT NOT NULL,
     "firstName" VARCHAR NOT NULL,
     "lastName" VARCHAR NOT NULL,
+    "phone" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "experienceSince" INTEGER NOT NULL,
+    "avatar" VARCHAR NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Agent_pkey" PRIMARY KEY ("id")
 );
@@ -60,8 +64,8 @@ CREATE TABLE "Property" (
     "description" VARCHAR NOT NULL,
     "address" VARCHAR NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
-    "agentId" TEXT NOT NULL,
     "districtId" CHAR(6) NOT NULL,
+    "agentId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -74,6 +78,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "Agent_email_key" ON "Agent"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Property_title_key" ON "Property"("title");
+
 -- AddForeignKey
 ALTER TABLE "District" ADD CONSTRAINT "District_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Province"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -81,7 +88,7 @@ ALTER TABLE "District" ADD CONSTRAINT "District_provinceId_fkey" FOREIGN KEY ("p
 ALTER TABLE "Province" ADD CONSTRAINT "Province_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Property" ADD CONSTRAINT "Property_agentId_fkey" FOREIGN KEY ("agentId") REFERENCES "Agent"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Property" ADD CONSTRAINT "Property_districtId_fkey" FOREIGN KEY ("districtId") REFERENCES "District"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Property" ADD CONSTRAINT "Property_districtId_fkey" FOREIGN KEY ("districtId") REFERENCES "District"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Property" ADD CONSTRAINT "Property_agentId_fkey" FOREIGN KEY ("agentId") REFERENCES "Agent"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

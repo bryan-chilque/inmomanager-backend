@@ -10,3 +10,6 @@ export * from './auth/login-user';
 export * from './agent/create-agent';
 export * from './agent/get-agents';
 export * from './agent/get-agent';
+
+export * from './file-upload/upload-single-file';
+export * from './file-upload/upload-multiple-file';

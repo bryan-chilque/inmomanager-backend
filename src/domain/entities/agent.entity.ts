@@ -8,6 +8,7 @@ export class AgentEntity {
         public phone: string,
         public email: string,
         public experienceSince: number,
+        public avatar?: string
     ) { }
     static fromObject( obj: { [key:string]: any } ) {
         const { firstName, lastName, phone, email, experienceSince } = obj;
@@ -23,7 +24,8 @@ export class AgentEntity {
             lastName,
             phone,
             email,
-            experienceSince
+            experienceSince,
+            obj.avatar
         );
     }
 }

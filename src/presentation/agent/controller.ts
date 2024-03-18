@@ -18,7 +18,7 @@ export class AgentController {
     }
 
     public createAgent = (req: Request, res: Response) => {
-        const [error, createAgentDto] = CreateAgentDto.create(req.body);
+        const [error, createAgentDto] = CreateAgentDto.create(req.body);      
         if (error) return res.status(400).json({ error });
         new CreateAgent(this.agentRepository)
             .execute(createAgentDto!)

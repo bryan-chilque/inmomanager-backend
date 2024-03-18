@@ -1,4 +1,5 @@
 import { prisma } from '../../data/postgres';
+import { UuidAdapter, S3Adapter } from '../../config';
 import { AgentDataSource } from '../../domain/datasources';
 import { CreateAgentDto } from '../../domain/dtos';
 import { AgentEntity } from '../../domain/entities';
@@ -18,9 +19,15 @@ export class AgentDataSourceImpl implements AgentDataSource {
                 throw CustomError.internalServer(`Agent with email ${createAgentDto.email} already exists`);
             }
 
+            const fileExtension = createAgentDto.avatar.mimetype.split('/')[1] ?? '';
+            const fileName = UuidAdapter.v4();
+            const fileUrl = await S3Adapter.uploadFile(createAgentDto.avatar, fileName, fileExtension);
+            if (!fileUrl || fileUrl === '') throw CustomError.internalServer('Error uploading file');
+            
             const agent = await prisma.agent.create({
                 data: {
-                    ...createAgentDto
+                    ...createAgentDto,
+                    avatar: fileUrl
                 }
             });
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AgentController } from "./controller";
 import { AgentDataSourceImpl } from "../../infrastructure/datasources";
 import { AgentRepositoryImpl } from "../../infrastructure/repositories";
-import { AuthMiddleware } from "../middlewares";
+import { AuthMiddleware, FileUploadMiddleware } from "../middlewares";
 
 export class AgentRoutes {
     static get routes(): Router {
@@ -11,7 +11,7 @@ export class AgentRoutes {
         const agentRepository = new AgentRepositoryImpl(datasource);
         const controller = new AgentController(agentRepository);
 
-        router.post('/', [ AuthMiddleware.validateJWT ], controller.createAgent);
+        router.post('/', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.createAgent);
         router.get('/:id', controller.getAgentById);
         router.get('/', controller.getAgents);
 
