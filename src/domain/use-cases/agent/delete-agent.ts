@@ -1,18 +1,17 @@
 import { AgentEntity } from "../../entities";
 import { AgentRepository } from "../../repositories";
 
-
-export interface GetAgentUseCase {
+export interface DeleteAgentUseCase {
     execute(id: string): Promise<AgentEntity>;
 }
 
-
-export class GetAgent implements GetAgentUseCase {
+export class DeleteAgent implements DeleteAgentUseCase {
     constructor(
         private readonly repository: AgentRepository
     ) { }
 
     execute(id: string): Promise<AgentEntity> {
-        return this.repository.getById(id);
+        return this.repository.deleteById(id);
     }
+
 }

@@ -58,11 +58,11 @@ export class PropertyDataSourceImpl implements PropertyDataSource {
 
     async updateById(updatePropertyDto: UpdatePropertyDto): Promise<PropertyEntity> {
         await this.getById(updatePropertyDto.id);
-        const updatedTodo = await prisma.property.update({
+        const updatedProperty = await prisma.property.update({
             where: { id: updatePropertyDto.id},
             data: updatePropertyDto!.values
         });
-        return PropertyEntity.fromObject(updatedTodo);
+        return PropertyEntity.fromObject(updatedProperty);
     }
 
     async deleteById(id: string): Promise<PropertyEntity> {

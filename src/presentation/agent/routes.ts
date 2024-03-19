@@ -14,7 +14,8 @@ export class AgentRoutes {
         router.post('/', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.createAgent);
         router.get('/:id', controller.getAgentById);
         router.get('/', controller.getAgents);
-
+        router.put('/:id', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.updateAgent);
+        router.delete('/:id', AuthMiddleware.validateJWT, controller.deleteAgent);
         return router;
     }
 }

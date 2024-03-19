@@ -4,11 +4,12 @@ import { AgentDataSource } from '../../domain/datasources';
 import { CreateAgentDto } from '../../domain/dtos';
 import { AgentEntity } from '../../domain/entities';
 import { CustomError } from '../../domain/errors';
+import { UpdateAgentDto } from '../../domain/dtos/agent/update-agent.dto';
 
 export class AgentDataSourceImpl implements AgentDataSource {
     constructor() { }
 
-    async createAgent(createAgentDto: CreateAgentDto): Promise<AgentEntity> {
+    async create(createAgentDto: CreateAgentDto): Promise<AgentEntity> {
         try {
             const agentExists = await prisma.agent.findFirst({
                 where: {
@@ -18,12 +19,14 @@ export class AgentDataSourceImpl implements AgentDataSource {
             if (agentExists) {
                 throw CustomError.internalServer(`Agent with email ${createAgentDto.email} already exists`);
             }
+            let fileUrl;
+            if (createAgentDto.avatar) {
+                const fileExtension = createAgentDto.avatar.mimetype.split('/')[1] ?? '';
+                const fileName = UuidAdapter.v4();
+                fileUrl = await S3Adapter.uploadFile(createAgentDto.avatar, fileName, fileExtension);
+                if (!fileUrl || fileUrl === '') throw CustomError.internalServer('Error uploading file');
+            }
 
-            const fileExtension = createAgentDto.avatar.mimetype.split('/')[1] ?? '';
-            const fileName = UuidAdapter.v4();
-            const fileUrl = await S3Adapter.uploadFile(createAgentDto.avatar, fileName, fileExtension);
-            if (!fileUrl || fileUrl === '') throw CustomError.internalServer('Error uploading file');
-            
             const agent = await prisma.agent.create({
                 data: {
                     ...createAgentDto,
@@ -38,7 +41,7 @@ export class AgentDataSourceImpl implements AgentDataSource {
         }
     }
 
-    async getAgentById(id: string): Promise<AgentEntity> {
+    async getById(id: string): Promise<AgentEntity> {
         try {
             const agent = await prisma.agent.findUnique({
                 where: { id }
@@ -53,7 +56,7 @@ export class AgentDataSourceImpl implements AgentDataSource {
         }
     }
     
-    async getAgents(): Promise<AgentEntity[]> {
+    async getAll(): Promise<AgentEntity[]> {
         try {
             const agents = await prisma.agent.findMany();
             return agents.map( agent => AgentEntity.fromObject(agent) );
@@ -62,7 +65,35 @@ export class AgentDataSourceImpl implements AgentDataSource {
             throw CustomError.internalServer(`${error}`);
         }
     }
-    deleteAgent(id: string): Promise<AgentEntity> {
-        throw CustomError.internalServer('Method not implemented.');
+
+    async updateById(updateAgentDto: UpdateAgentDto): Promise<AgentEntity> {
+        const oldData = await this.getById(updateAgentDto.id);
+        let fileUrl;
+        if (updateAgentDto.avatar) {
+            const fileExtension = updateAgentDto.avatar.mimetype.split('/')[1] ?? '';
+            const fileName = UuidAdapter.v4();
+            fileUrl = await S3Adapter.uploadFile(updateAgentDto.avatar, fileName, fileExtension);
+            if (!fileUrl || fileUrl === '') throw CustomError.internalServer('Error uploading file');
+            if (oldData.avatar) await S3Adapter.deleteFile(oldData.avatar);
+        }
+
+        const updatedAgent = await prisma.agent.update({
+            where: { id: updateAgentDto.id },
+            data: {
+                ...updateAgentDto.values,
+                avatar: fileUrl
+            }
+        });
+        return AgentEntity.fromObject(updatedAgent);
     }
+
+    async deleteById(id: string): Promise<AgentEntity> {
+        await this.getById(id);
+        const agent = await prisma.agent.delete({
+            where: { id }
+        });
+        if (agent.avatar) await S3Adapter.deleteFile(agent.avatar);
+        return AgentEntity.fromObject(agent);
+    }
+
 }

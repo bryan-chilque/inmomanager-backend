@@ -12,7 +12,7 @@ export class GetAgents implements GetAgentsUseCase {
     ) { }
 
     execute(): Promise<AgentEntity[]> {
-        return this.repository.getAgents();
+        return this.repository.getAll();
     }
 
 }

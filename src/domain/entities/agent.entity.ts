@@ -10,6 +10,7 @@ export class AgentEntity {
         public experienceSince: number,
         public avatar?: string
     ) { }
+    
     static fromObject( obj: { [key:string]: any } ) {
         const { firstName, lastName, phone, email, experienceSince } = obj;
         if ( !firstName ) throw CustomError.badRequest('Agent first name is required');
@@ -25,7 +26,7 @@ export class AgentEntity {
             phone,
             email,
             experienceSince,
-            obj.avatar
+            obj.avatar ?? undefined
         );
     }
 }

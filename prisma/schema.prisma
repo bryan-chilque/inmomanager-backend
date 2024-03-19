@@ -34,7 +34,7 @@ model Agent {
   phone           String     @db.VarChar
   email           String     @unique @db.VarChar
   experienceSince Int        @db.Integer
-  avatar          String     @db.VarChar
+  avatar          String?    @db.VarChar
   //language        String     @db.VarChar
   properties      Property[]
   createdAt       DateTime   @default(now())
@@ -70,6 +70,7 @@ model Property {
   description String   @db.VarChar
   address     String   @db.VarChar
   price       Decimal  @db.Decimal(10, 2)
+  images      String[]
   district    District @relation(fields: [districtId], references: [id])
   districtId  String   @db.Char(6)
   agent       Agent    @relation(fields: [agentId], references: [id])
