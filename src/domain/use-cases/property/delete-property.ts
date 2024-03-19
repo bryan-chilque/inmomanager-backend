@@ -2,7 +2,7 @@ import { PropertyEntity } from '../../entities/property.entity';
 import { PropertyRepository } from '../../repositories/property.repository';
 
 export interface DeletePropertyUseCase {
-     execute(id: string): Promise<PropertyEntity>;
+    execute(id: string): Promise<PropertyEntity>;
 }
 
 export class DeleteProperty implements DeletePropertyUseCase {

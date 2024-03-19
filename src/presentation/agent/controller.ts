@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { CustomError } from "../../domain/errors";
 import { AgentRepository } from "../../domain/repositories";
-import { CreateAgentDto } from "../../domain/dtos";
-import { CreateAgent, GetAgents, GetAgent } from "../../domain/use-cases";
+import { CreateAgentDto, UpdateAgentDto } from "../../domain/dtos";
+import { CreateAgent, GetAgents, GetAgent, DeleteAgent } from "../../domain/use-cases";
+import { UpdateAgent } from '../../domain/use-cases/agent/update-agent';
 
 export class AgentController {
     constructor(
@@ -18,7 +19,7 @@ export class AgentController {
     }
 
     public createAgent = (req: Request, res: Response) => {
-        const [error, createAgentDto] = CreateAgentDto.create(req.body);      
+        const [error, createAgentDto] = CreateAgentDto.create(req.body);
         if (error) return res.status(400).json({ error });
         new CreateAgent(this.agentRepository)
             .execute(createAgentDto!)
@@ -27,9 +28,9 @@ export class AgentController {
     }
 
     public getAgentById = (req: Request, res: Response) => {
-        const { id } = req.params;
+        const id = req.params.id;
         new GetAgent(this.agentRepository)
-            .execute( id )
+            .execute(id)
             .then(agent => res.json(agent))
             .catch(error => this.handleError(error, res));
     }
@@ -41,4 +42,21 @@ export class AgentController {
             .catch(error => this.handleError(error, res));
     }
 
+    public updateAgent = (req: Request, res: Response) => {
+        const id = req.params.id;
+        const [error, updateAgentDto] = UpdateAgentDto.create({ ...req.body, id });
+        if (error) return res.status(400).json({ error });
+        new UpdateAgent(this.agentRepository)
+            .execute(updateAgentDto!)
+            .then(agent => res.json(agent))
+            .catch(error => this.handleError(error, res));
+    }
+
+    public deleteAgent = (req: Request, res: Response) => {
+        const id = req.params.id;
+        new DeleteAgent(this.agentRepository)
+            .execute(id)
+            .then(agent => res.json(agent))
+            .catch(error => this.handleError(error, res));
+    }
 }

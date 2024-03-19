@@ -64,6 +64,7 @@ CREATE TABLE "Property" (
     "description" VARCHAR NOT NULL,
     "address" VARCHAR NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
+    "images" TEXT[],
     "districtId" CHAR(6) NOT NULL,
     "agentId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

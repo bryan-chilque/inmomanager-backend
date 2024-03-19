@@ -1,6 +1,6 @@
-import { UpdatePropertyDto } from '../../dtos/properties/update-property.dto';
-import { PropertyEntity } from '../../entities/property.entity';
-import { PropertyRepository } from '../../repositories/property.repository';
+import { UpdatePropertyDto } from '../../dtos';
+import { PropertyEntity } from '../../entities';
+import { PropertyRepository } from '../../repositories';
 
 export interface UpdatePropertyUseCase {
      execute(dto: UpdatePropertyDto): Promise<PropertyEntity>;

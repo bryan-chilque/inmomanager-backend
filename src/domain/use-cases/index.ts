@@ -8,8 +8,10 @@ export * from './auth/register-user';
 export * from './auth/login-user';
 
 export * from './agent/create-agent';
-export * from './agent/get-agents';
 export * from './agent/get-agent';
+export * from './agent/get-agents';
+export * from './agent/update-agent';
+export * from './agent/delete-agent';
 
 export * from './file-upload/upload-single-file';
 export * from './file-upload/upload-multiple-file';

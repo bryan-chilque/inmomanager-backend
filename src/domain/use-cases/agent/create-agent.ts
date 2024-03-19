@@ -12,7 +12,7 @@ export class CreateAgent implements CreateAgentUseCase {
     ) { }
 
     execute(dto: CreateAgentDto): Promise<AgentEntity> {
-        return this.repository.createAgent(dto);
+        return this.repository.create(dto);
     }
 
 }

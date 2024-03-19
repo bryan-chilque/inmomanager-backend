@@ -1,10 +1,10 @@
-import { CreateAgentDto } from "../dtos/agent/create-agent.dto";
+import { CreateAgentDto, UpdateAgentDto } from "../dtos";
 import { AgentEntity } from "../entities";
 
 export abstract class AgentDataSource {
-    abstract createAgent(createAgentDto: CreateAgentDto): Promise<AgentEntity>;
-    abstract getAgentById(id: string): Promise<AgentEntity>;
-    abstract getAgents(): Promise<AgentEntity[]>;
-    //abstract updateAgent(agent: UpdateAgentDto): Promise<AgentEntity>;
-    abstract deleteAgent(id: string): Promise<AgentEntity>;
+    abstract create(createAgentDto: CreateAgentDto): Promise<AgentEntity>;
+    abstract getById(id: string): Promise<AgentEntity>;
+    abstract getAll(): Promise<AgentEntity[]>;
+    abstract updateById(agent: UpdateAgentDto): Promise<AgentEntity>;
+    abstract deleteById(id: string): Promise<AgentEntity>;
 }
