@@ -1,4 +1,5 @@
 import { prisma } from '../../data/postgres/index';
+import { S3Adapter, UuidAdapter } from '../../config';
 import { CreatePropertyDto, UpdatePropertyDto} from "../../domain/dtos";
 import { PropertyDataSource } from '../../domain/datasources';
 import { PropertyEntity } from '../../domain/entities';
@@ -29,12 +30,22 @@ export class PropertyDataSourceImpl implements PropertyDataSource {
         if (propertyExists) {
             throw CustomError.badRequest(`Property with title ${createPropertyDto.title} already exists`);
         } 
+        let filesUrl = [];
+        if (createPropertyDto.images) {
+            for (const image of createPropertyDto.images) {
+                const fileExtension = image.mimetype.split('/')[1] ?? '';
+                const fileName = UuidAdapter.v4();
+                const fileUrl = await S3Adapter.uploadFile(image, fileName, fileExtension);
+                if (!fileUrl || fileUrl === '') throw CustomError.internalServer('Error uploading file');
+                filesUrl.push(fileUrl);
+            }
+        }
 
         try {
             const property = await prisma.property.create({
               data: {
                 ...createPropertyDto,
-                agentId: agentExists.id
+                images: filesUrl,
               }
             });
             return PropertyEntity.fromObject( property );
