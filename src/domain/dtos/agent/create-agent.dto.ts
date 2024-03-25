@@ -1,5 +1,5 @@
 import { UploadedFile } from "express-fileupload";
-import { regularExps } from "../../../config";
+import { regularExps, isValidExtension, isValidSize, MAX_FILE_SIZE, VALID_EXTENSIONS } from "../../../config";
 
 export class CreateAgentDto {
     private constructor(
@@ -31,15 +31,13 @@ export class CreateAgentDto {
         let avatar
         if (props.file) {
             avatar = props.file[0] as UploadedFile 
-            const validExtension = ['jpg', 'jpeg', 'png']  
             const fileExtension = avatar.mimetype.split('/')[1] ?? '';
             
-            if ( !validExtension.includes(fileExtension) ) {
-                return[`Invalid file extension: ${fileExtension}, valid extensions are: ${validExtension.join(', ')}.`];
-            }  
-    
-            if (avatar.size > 5000000) {
-                return ['File size must be less than 5MB'];
+            if (!isValidExtension(fileExtension)) {
+                return [`Invalid file extension: ${fileExtension}, valid extensions are: ${VALID_EXTENSIONS.join(', ')}.`];
+            }
+            if (!isValidSize(avatar.size)) {
+                return [`File size must be less than ${MAX_FILE_SIZE / 1000000}MB`];
             }
         }
 

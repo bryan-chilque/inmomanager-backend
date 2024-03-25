@@ -8,6 +8,7 @@ export class PropertyEntity {
         public description: string,
         public address: string,
         public price: number,
+        public images: string[],
         public districtId: string,
         public agentId: string,
     ) { }
@@ -30,6 +31,7 @@ export class PropertyEntity {
             description,
             address,
             price,
+            obj.images,
             districtId,
             agentId
         );

@@ -11,11 +11,13 @@ export class AgentRoutes {
         const agentRepository = new AgentRepositoryImpl(datasource);
         const controller = new AgentController(agentRepository);
 
-        router.post('/', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.createAgent);
         router.get('/:id', controller.getAgentById);
         router.get('/', controller.getAgents);
+
+        router.post('/', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.createAgent);
         router.put('/:id', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], controller.updateAgent);
         router.delete('/:id', AuthMiddleware.validateJWT, controller.deleteAgent);
+        
         return router;
     }
 }

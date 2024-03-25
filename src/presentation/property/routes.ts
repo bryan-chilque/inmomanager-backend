@@ -2,7 +2,7 @@ import { Router } from "express";
 import { PropertyController } from "./controller";
 import { PropertyDataSourceImpl } from "../../infrastructure/datasources";
 import { PropertyRepositoryImpl } from "../../infrastructure/repositories";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { AuthMiddleware, FileUploadMiddleware } from "../middlewares";
 
 export class PropertyRoutes {
     static get routes(): Router {
@@ -15,8 +15,8 @@ export class PropertyRoutes {
         router.get('/', propertyController.getProperties );
         router.get('/:id', propertyController.getPropertyById );
         
-        router.post('/', [ AuthMiddleware.validateJWT ], propertyController.createProperty );
-        router.put('/:id', [ AuthMiddleware.validateJWT ], propertyController.updateProperty );
+        router.post('/', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], propertyController.createProperty );
+        router.put('/:id', [ AuthMiddleware.validateJWT, FileUploadMiddleware.containFile ], propertyController.updateProperty );
         router.delete('/:id', [ AuthMiddleware.validateJWT ], propertyController.deleteProperty );
 
         return router;
